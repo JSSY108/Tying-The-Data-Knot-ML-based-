@@ -52,6 +52,19 @@ Displays the final tuning leaderboard evaluating the LightGBM classifier against
 
 ---
 
+## ⚙️ Mathematical Preprocessing Alignment
+
+To prevent feature distribution drift and ensure zero prediction skew, the interactive simulator's input pipeline is mathematically aligned with the training configurations:
+
+1. **Outlier Capping:** App telemetry inputs (`app_usage_time_min`, `message_sent_count`, `likes_received`, and `mutual_matches`) are clipped using the exact 1st and 99th percentile bounds calculated from the training split.
+2. **Cyclic Time Conversions:** The user's active hour input ($H \in [0, 23]$) is mapped to circular dimensions using $\sin(2\pi H / 24)$ and $\cos(2\pi H / 24)$ trigonometric transforms.
+3. **Ordinal Mapping:** Education levels and income brackets are encoded using a pre-fit `OrdinalEncoder` using the exact hierarchical categories defined during training.
+4. **One-Hot Nominal Encoding:** Context variables (gender, orientation, zodiac, location, body type, intent) are expanded into dummy indicator variables via `OneHotEncoder`.
+5. **Robust Scaling:** Numeric metrics are scaled via `RobustScaler` using the medians and Interquartile Ranges (IQR) of the training dataset split, rather than standard normalizing.
+6. **Mutual Information Subset:** Out of the resulting 114 preprocessed features, the app extracts the exact 30 features selected by Mutual Information to match the LightGBM input vector.
+
+---
+
 ## 📂 Project Structure
 
 *   `app.py` — The core executable Streamlit application.
