@@ -706,7 +706,8 @@ elif navigation == "📉 Model Benchmarks & Metrics":
         st.markdown(
             """
             - **Feature Spikes:** The five features `body_type_Slim`, `sexual_orientation_Queer`, `location_type_Metro`, `gender_Male`, and `swipe_time_of_day_Evening` dominate the splits by several orders of magnitude.
-            - **Tree Structure Cues:** This indicates that the LightGBM trees split repeatedly on these nominal dummy categories trying to partition the uniform noise. In a dataset where classes are balanced and features contain no correlation to the target, the algorithm isolates random local variance clusters to minimize impurity, resulting in overfitting to the training noise.
+            - **Uniform Noise Phenomenon:** Because the target variable (`match_outcome`) is completely balanced and consists of uniform random noise (exactly 10% per class), there is no true mathematical relationship between any input feature and the output.
+            - **Tree Structure Cues:** As a result, the LightGBM trees split repeatedly on these nominal dummy categories to partition the random noise. The algorithm isolates random local variance clusters to minimize training impurity, leading to severe overfitting without any actual generalization.
             - **RobustScaler Impact:** Robust scaling ensures that continuous metrics such as `age` and `mutual_matches` do not scale-skew the splits, centering features safely away from outliers.
             """
         )
