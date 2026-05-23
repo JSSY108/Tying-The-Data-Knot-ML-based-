@@ -48,7 +48,16 @@ Allows researchers to slice demographics to identify behavioral clusters:
 
 ### 3. Model Benchmarks & Critique
 Displays the final tuning leaderboard evaluating the LightGBM classifier against other models (Logistic Regression, Random Forest, Extra Trees, XGBoost, and **auto-sklearn**).
-*   **The Academic Critique:** Discusses why all frameworks converge at **~10% classification accuracy** (equal to random guessing on a 10-class uniform split). It critiques the synthetic dataset, illustrating that when targets contain uniform noise, high-capacity boosting models simply overfit local noise patterns instead of learning generalizable relationships.
+
+*   **Best Evaluation Method:** Since this is a 10-class classification task with perfectly balanced classes (~5,000 instances each, representing exactly 10% of the dataset), **Classification Accuracy** and **Macro-averaged F1-Score** are the best evaluation metrics. While accuracy gives an overall performance summary, the **Macro F1-Score** is the gold standard here because it calculates the unweighted mean of F1-scores across all 10 target outcomes. This ensures that any performance drops in minor or highly noisy classes are not masked.
+*   **Model Comparison Framework:** To compare our models, we used a Stratified Train-Test split (70% train, 30% test) to preserve outcome proportions across splits. We evaluated each framework on:
+    1.  **Macro F1-score & Accuracy:** Evaluating classification capability against the random baseline.
+    2.  **Confusion Matrix Analysis:** Plotting error distributions to check if the models isolated any real target signals.
+    3.  **Tuning Efficiency:** Comparing search runtime duration (seconds).
+*   **Comparison to auto-sklearn:**
+    *   **Custom LightGBM Performance:** Our tuned LightGBM classifier achieved a Macro F1 of **0.0997** (9.97%) and test accuracy of **0.0998** (9.98%), taking 172.93 seconds to execute randomized search cross-validation.
+    *   **auto-sklearn Baseline:** The automated machine learning framework (`auto-sklearn`) was configured with a 1-hour time budget (3600 seconds) and achieved a validation Macro F1 of **0.1000** and test accuracy of **0.1012**.
+    *   **Academic Verdict:** Our custom tuned LightGBM performs identically to the auto-sklearn automated baseline. Both converge precisely at the **10.0% random baseline**, proving that neither automated search nor high-capacity ensembling can extract predictive signal from a synthetic target vector that consists of uniform random noise.
 
 ---
 
