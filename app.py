@@ -238,6 +238,18 @@ if navigation == "🔮 Scenario & Match Simulator":
     st.markdown('<div class="gradient-header">Scenario & Match Simulator</div>', unsafe_allow_html=True)
     st.markdown('<div class="serif-subtitle">Test digital interactions and predict the destiny of simulated couples</div>', unsafe_allow_html=True)
     
+    with st.expander("⚙️ Under the Hood: Mathematical Preprocessing Pipeline", expanded=False):
+        st.markdown(r"""
+        To prevent feature distribution drift and ensure zero prediction skew, the interactive simulator's input pipeline is mathematically aligned with the training configurations:
+        
+        1. **Outlier Capping:** App telemetry inputs (`app_usage_time_min`, `message_sent_count`, `likes_received`, and `mutual_matches`) are clipped using the exact 1st and 99th percentile bounds calculated from the training split.
+        2. **Cyclic Time Conversions:** The user's active hour input ($H \in [0, 23]$) is mapped to circular dimensions using $\sin(2\pi H / 24)$ and $\cos(2\pi H / 24)$ trigonometric transforms.
+        3. **Ordinal Mapping:** Education levels and income brackets are encoded using a pre-fit `OrdinalEncoder` using the exact hierarchical categories defined during training.
+        4. **One-Hot Nominal Encoding:** Context variables (gender, orientation, zodiac, location, body type, intent) are expanded into dummy indicator variables via `OneHotEncoder`.
+        5. **Robust Scaling:** Numeric metrics are scaled via `RobustScaler` using the medians and Interquartile Ranges (IQR) of the training dataset split, rather than standard normalizing.
+        6. **Mutual Information Subset:** Out of the resulting 114 preprocessed features, the app extracts the exact 30 features selected by Mutual Information to match the LightGBM input vector.
+        """)
+    
     # Organize columns dividing Demographics from App Habits
     col_dem, col_hab = st.columns([1, 1], gap="large")
     
@@ -641,18 +653,28 @@ elif navigation == "📉 Model Benchmarks & Metrics":
     # Critique Callout Block
     st.markdown("""
     <div class="critique-box">
-        <h4 style="margin-top:0; color:#7e57c2; font-weight:800; font-size:1.2rem;">⚠️ Critical Evaluation & marking rubric discussion</h4>
-        <p style="font-size:0.95rem; line-height:1.6;">
-            <strong>The Uniform Random Distribution Phenomenon:</strong><br>
-            As evidenced in the leaderboard above, the performance of all machine learning models—ranging from linear baselines (Logistic Regression) to highly parameterized boosting ensembles (LightGBM, XGBoost) and automated frameworks (auto-sklearn)—converges directly at <strong>~10.0% accuracy</strong> and a <strong>~0.099 Macro F1-score</strong>.
-        </p>
-        <p style="font-size:0.95rem; line-height:1.6; margin-top:10px;">
-            In a balanced 10-class problem, a random predictor achieves exactly 10.0% accuracy. The mathematical convergence of our models at this exact limit confirms that the target variable <code>match_outcome</code> contains programmatic, uniform noise with no causal relationship to the 19 behavioral features in the synthetic dataset.
-        </p>
-        <p style="font-size:0.95rem; line-height:1.6; margin-top:10px;">
-            <strong>Implications for Applied Machine Learning:</strong><br>
-            This serves as a critical academic reminder: <em>advanced hyperparameter tuning and complex architectures (like auto-sklearn or CatBoost) are entirely bound by the signal-to-noise ratio of the underlying data.</em> When there is no physical signal to extract, models cannot squeeze predictive patterns out of noise. Hence, the application concentrates heavily on scenario simulator contrasts rather than static, confident predictions.
-        </p>
+        <h4 style="margin-top:0; color:#7e57c2; font-weight:800; font-size:1.25rem; border-bottom: 2px solid rgba(126, 87, 194, 0.2); padding-bottom: 5px;">⚠️ Academic Critique & Model Evaluation FAQ</h4>
+        <div style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6;">
+            <strong>1. What is the best evaluation method for our models?</strong><br>
+            Since the dataset contains 10 target classes that are perfectly balanced (each class representing exactly 10% of the dataset), <strong>Classification Accuracy</strong> and the <strong>Macro-averaged F1-Score</strong> are the best evaluation metrics. The <strong>Macro F1-score</strong> is particularly crucial here because it treats all classes equally and calculates the average F1-score across all 10 outcomes. This prevents any localized model failure or extreme bias from being hidden by overall metrics.
+        </div>
+        <div style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6;">
+            <strong>2. How do we compare our model to other models?</strong><br>
+            We split the dataset using a Stratified Train-Test split (70% train, 30% test) to ensure class parity across splits. We then evaluate and compare the models based on:
+            <ul style="margin-top: 5px; margin-bottom: 5px; padding-left: 20px;">
+                <li><strong>Macro F1 & Accuracy:</strong> Evaluating overall predictive power compared to the 10% random baseline.</li>
+                <li><strong>Confusion Matrix Analysis:</strong> Plotting predicted versus true label distributions to verify if the model learns any structured pattern.</li>
+                <li><strong>Tuning Efficiency:</strong> Comparing the runtime duration required to find optimal parameters.</li>
+            </ul>
+        </div>
+        <div style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6;">
+            <strong>3. How does our custom model compare to auto-sklearn?</strong><br>
+            <ul style="margin-top: 5px; margin-bottom: 5px; padding-left: 20px;">
+                <li>Our tuned <strong>LightGBM</strong> classifier achieves a Macro F1 of <strong>0.0997</strong> and a test accuracy of <strong>0.0998</strong> (tuning time: 172.93s).</li>
+                <li>The <strong>auto-sklearn</strong> baseline (trained with a 1-hour time budget) achieves a validation Macro F1 of <strong>0.1000</strong> and a test accuracy of <strong>0.1012</strong>.</li>
+            </ul>
+            <strong>Verdict:</strong> Both our custom pipeline and the auto-sklearn benchmark converge exactly at the <strong>10% random baseline</strong>. This proves that no ensembling or automated framework can extract signal from a target vector composed of uniform random noise, validating that the target is mathematically independent of the features.
+        </div>
     </div>
     """, unsafe_allow_html=True)
     
