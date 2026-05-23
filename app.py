@@ -528,8 +528,9 @@ elif navigation == "📊 Behavioral Contrast Engine":
                     """
                 )
                 st.info(
-                    "Try this: Filter the chart to only show 'Mutual Match' and look at the relationship between "
-                    "App Usage Time and Swipe Ratio. Does extreme app usage guarantee a match?"
+                    "**🔍 Try This Scenario: The 'Power Swiper' Paradox**\n\n"
+                    "Filter the chart to show ONLY **'Mutual Match'** and **'Ghosted'**. Set your axes to compare `swipe_right_ratio` against `app_usage_time_min`.\n\n"
+                    "Look at the extreme top-right (users who spend hours on the app swiping right on everyone). Do these 'power users' actually secure more Mutual Matches, or does indiscriminate swiping lead straight to being Ghosted? Use the box-select tool to highlight this specific cluster and find out."
                 )
                 
             # Base color mapping configuration (reused across all plots)
