@@ -2,7 +2,7 @@
 
 An interactive Streamlit web application serving a pre-trained **LightGBM Classifier** to simulate and evaluate dating app match outcomes based on user behavioral telemetry. 
 
-This repository was created as part of the group assignment for the **WIA1006/WID3006 Machine Learning** course, Faculty of Computer Science & Information Technology (FCSIT), **University of Malaya** (Semester 2, Session 2025/2026).
+
 
 ---
 
