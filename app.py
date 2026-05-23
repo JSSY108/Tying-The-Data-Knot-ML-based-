@@ -711,3 +711,16 @@ elif navigation == "📉 Model Benchmarks & Metrics":
             """
         )
         st.markdown('</div>', unsafe_allow_html=True)
+
+    # Reference Notebook Link
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style="text-align: center; opacity: 0.8; font-size: 0.95rem; margin-top: 20px; margin-bottom: 20px;">
+            📚 <strong>Reference Notebook:</strong> View our complete machine learning pipeline, training runs, hyperparameter tuning, and benchmarks on 
+            <a href="https://colab.research.google.com/drive/1KrbUu9vnd13_hfug7iCcdWaqGzCGCW5v?usp=drive_link" target="_blank" style="color: #ff2a5f; text-decoration: none; font-weight: bold;">Google Colab 🚀</a>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+
